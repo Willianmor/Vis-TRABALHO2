@@ -50,7 +50,7 @@ function maps() {
     }
 
     //Import csv para definir a escala de cores
-    scope.fileCSV = function(file) {
+    /*scope.fileCSV = function(file) {
 
         d3.csv(file, function(error, data) {
     
@@ -75,9 +75,9 @@ function maps() {
             scope.colorscalemap = d3.scaleLinear().domain([scope.colormin,scope.colormax]).range(["rgb(237, 248, 233)","rgb(0,109,44)"])
         })  
         
-    }
+    }*/
     
-    scope.joinData = function()
+    /*scope.joinData = function()
     {
         scope.data.map(function(d){
             d.properties.value = scope.colormap[d.properties.name];  
@@ -87,7 +87,7 @@ function maps() {
         scope.ids = ids
         //console.log("dados ID",scope.ids)
         //console.log("Estrutura do mapa",scope.data)
-    }
+    }*/
 
     //SVG
     scope.appendSvg = function(div)
@@ -133,7 +133,7 @@ function maps() {
     }
     
     //Legenda da seleção
-    scope.appendLegend = function() {
+    /*scope.appendLegend = function() {
 
         var data = ["Município selecionado"];
         scope.color = d3.scaleOrdinal().range([ "rgb(279, 155, 107)"]);
@@ -159,11 +159,11 @@ function maps() {
             .attr('dy', '.35em')
             .style('text-anchor', 'end')
             .text((d) => { return d });
-	}
+	}*/
 
 
     //Legenda
-    scope.legend = function (){
+    /*scope.legend = function (){
         // add a legend
 		
 		var legend = scope.svg.append("defs")
@@ -215,7 +215,7 @@ function maps() {
             .attr("class", "y axis")
 			.attr("transform", "translate(41,10)")
 			.call(yAxis)
-    }
+    }*/
     
     scope.titulo = function()
 	{

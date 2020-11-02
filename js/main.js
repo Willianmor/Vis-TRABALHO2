@@ -1,7 +1,9 @@
 import { Dados } from './dados.js'
+import { Maps } from './maps.js'
 
 window.loadMyData = function loadMyData(selectObject) {
     console.log('Load-Data');
+    main();
   }
 
 // ----------------------- Main --------------------------
@@ -16,10 +18,14 @@ async function main() {
       bottom: 30, 
       right: 30
     };
-    file = '../assets/dataset/'
+    let myfile = '../assets/dataset/deter_amz_2015-01-01_2020-11-02/deter_amz.geojson';
     // Load data
-    await dados.loadCSV(file);
-  
+    await dados.loadJSON(myfile);
+
+    //console.log(dados.data.features.map(function(d) { return d.properties.gid}))
+    let map = new Maps(confsvg);
+    map.createAxisLabel('x', 'y');
+    map.buildMapMercator(dados.data)
 }
 
 
