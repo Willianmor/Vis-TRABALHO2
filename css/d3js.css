@@ -1,0 +1,7 @@
+.area {
+    fill: steelblue;
+  }
+  
+  .area :hover {
+    fill: red;
+  }
