@@ -11,7 +11,7 @@ export class Maps {
 
         this.projection = null;
         this.path = null;
-        this.ids = null;
+        this.data = null;
 
         this.createSvg();
         this.createMargins();
@@ -33,6 +33,7 @@ export class Maps {
             .attr("transform", `translate(${this.config.left},${this.config.top})`)
     }
 
+    // LEER: https://stackoverflow.com/questions/33087405/using-queue-to-load-multiple-files-and-assign-to-globals
     async render(myfile) {
         // Map and projection
         let projection = d3.geoMercator()
@@ -42,11 +43,11 @@ export class Maps {
         .translate([ this.config.width/2, this.config.height/2 ])
 
         // Load external data and boot "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
-        d3.json(myfile, function(data){
+        await d3.json(myfile, function(data){
 
             // Filter data
             //data.features = data.features.filter( function(d){return d.properties.name=="France"} )
-
+            this.data = data.features;
             // Draw the map
             this.svg.append("g")
                 .selectAll("path")
@@ -60,7 +61,6 @@ export class Maps {
                 .style("stroke", "black")
                 .style("opacity", .3)
         }.bind(this));
-        
     }
 
 }

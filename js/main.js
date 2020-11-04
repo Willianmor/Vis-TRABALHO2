@@ -24,6 +24,7 @@ function main() {
     let map = new Maps(confsvg);
     //map.buildMapMercator(dados.data)
     map.render(myfile);
+    console.log('Finish-render..')
 }
 
 
