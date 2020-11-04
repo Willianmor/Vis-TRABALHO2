@@ -27,7 +27,7 @@ export class Dados {
 
   async loadJSON(file) {
     this.data = await d3.json(file);
-    this.data = this.data.features;
+    //this.data = this.data.features;
     //this.data = this.data.features.slice(12);
   }
 

@@ -1,3 +1,4 @@
+// https://www.d3-graph-gallery.com/graph/bubblemap_basic.html
 export class Maps {
     constructor(config) {
         this.config = config;
@@ -32,50 +33,34 @@ export class Maps {
             .attr("transform", `translate(${this.config.left},${this.config.top})`)
     }
 
-    createAxisLabel(xAxisLabel, yAxisLabel) {
-        this.margins
-          .append('text')
-          .attr('class', 'axis-label')
-          .attr('x', -(this.config.height - this.config.top - this.config.bottom) / 2)
-          .attr('y', -(this.config.left) / 2)
-          .attr('fill', 'black')
-          .attr('transform', `rotate(-90)`)
-          .attr('text-anchor', 'middle')
-          .text(yAxisLabel);
+    async render(myfile) {
+        // Map and projection
+        let projection = d3.geoMercator()
+        .rotate([0,0])
+        .center([-57.82134,-5.15357])                // GPS of location to zoom on
+        .scale(8000)                       // This is like the zoom
+        .translate([ this.config.width/2, this.config.height/2 ])
+
+        // Load external data and boot "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
+        d3.json(myfile, function(data){
+
+            // Filter data
+            //data.features = data.features.filter( function(d){return d.properties.name=="France"} )
+
+            // Draw the map
+            this.svg.append("g")
+                .selectAll("path")
+                .data(data.features)
+                .enter()
+                .append("path")
+                .attr("fill", "#b8b8b8")
+                .attr("d", d3.geoPath()
+                    .projection(projection)
+                )
+                .style("stroke", "black")
+                .style("opacity", .3)
+        }.bind(this));
         
-        this.margins
-          .append('text')
-          .attr('class', 'axis-label')
-          .attr('y', (this.config.height + 10))
-          .attr('x', (this.config.width - this.config.left - this.config.right) / 2)
-          .attr('fill', 'black')
-          .text(xAxisLabel);
-          
-    }
-
-    //Construção do mapa - projeção
-    buildMapMercator(data_features) {      
-        //console.log("dados ID",this.ids)   
-        this.projection = d3.geoMercator()
-            .scale(8000)
-            .rotate([0,0])
-            .center([-57.82134,-5.15357])
-            .translate([this.config.width / 2.4, this.config.height / 2]);
-
-        this.path = d3.geoPath()
-            .projection(this.projection);
-
-        this.ids = data_features.map(function(d) { return d.properties.gid})
-        console.log(this.ids[0]);
-        this.svg.selectAll("path")
-            .data(data_features)
-            .enter()
-            .append("path")
-            .attr("id", function(d,i) { return this.ids[i]})
-            .attr("d", this.path)
-            .style("stroke", "#fff")
-            .style("stroke-width", "1");
-            //.style("fill", (d) => {return this.colorscalemap(d.properties.value)});
     }
 
 }

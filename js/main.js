@@ -8,7 +8,7 @@ window.loadMyData = function loadMyData(selectObject) {
 
 // ----------------------- Main --------------------------
 // Load by default bar-chart
-async function main() {
+function main() {
     let confsvg = {
       div: '#main', 
       width: 600, 
@@ -19,15 +19,13 @@ async function main() {
       right: 30
     };
     let myfile = '../assets/dataset/deter_amz_2015-01-01_2020-11-02/deter_amz.geojson';
-    // Load data
-    await dados.loadJSON(myfile);
 
     //console.log(dados.data.features.map(function(d) { return d.properties.gid}))
     let map = new Maps(confsvg);
-    map.createAxisLabel('x', 'y');
-    map.buildMapMercator(dados.data)
+    //map.buildMapMercator(dados.data)
+    map.render(myfile);
 }
 
 
 // ------ Global Variables ----
-let dados = new Dados();
+//let dados = new Dados();
