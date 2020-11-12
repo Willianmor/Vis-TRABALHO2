@@ -60,7 +60,25 @@ export class Maps {
                 )
                 .style("stroke", "black")
                 .style("opacity", .3)
+                
         }.bind(this));
+
+        // //zoom
+        // var g = this.svg
+        // var zoom = d3.zoom()
+        //     .scaleExtent([1, 10])
+        //     .on('zoom', function() {
+        //         g.append("g")
+        //             .selectAll('path')
+        //                 .attr('transform', d3.event.transform);
+        //                 console.log("chegou")
+        //         g.append("g")
+        //             .selectAll("d")
+        //                 .attr('transform', d3.event.transform);
+        //                 console.log("chegou2")
+        // });
+
+        // g.call(zoom);
     }
 
 }
