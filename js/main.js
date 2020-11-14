@@ -23,7 +23,8 @@ function main() {
     //console.log(dados.data.features.map(function(d) { return d.properties.gid}))
     let map = new Maps(confsvg);
     //map.buildMapMercator(dados.data)
-    map.render(myfile);
+    // map.render(myfile);
+    map.test_brush();
     console.log('Finish-render..')
 }
 
