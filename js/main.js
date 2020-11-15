@@ -14,7 +14,7 @@ function main() {
       width: 600, 
       height: 400, 
       top: 30, 
-      left: 150, 
+      left: 10, 
       bottom: 30, 
       right: 30
     };
@@ -23,8 +23,8 @@ function main() {
     //console.log(dados.data.features.map(function(d) { return d.properties.gid}))
     let map = new Maps(confsvg);
     //map.buildMapMercator(dados.data)
-    // map.render(myfile);
-    map.test_brush();
+    map.render(myfile);
+    //map.test_brush();
     console.log('Finish-render..')
 }
 

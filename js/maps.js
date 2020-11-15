@@ -1,4 +1,22 @@
 // https://www.d3-graph-gallery.com/graph/bubblemap_basic.html
+// https://codepen.io/ssz360/pen/jOPMwme
+//uncomment  ctr+k+u
+//comment  ctr+k+c
+function diff (num1, num2) {
+    if (num1 > num2) {
+        return (num1 - num2);
+    } else {
+        return (num2 - num1);
+    }
+};
+  
+function dist (x1, y1, x2, y2) {
+    var deltaX = diff(x1, x2);
+    var deltaY = diff(y1, y2);
+    var dist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    return (dist);
+};
+
 export class Maps {
     constructor(config) {
         this.config = config;
@@ -34,7 +52,8 @@ export class Maps {
             .attr('x', 10)
             .attr('y', 10)
             .attr('width', this.config.width + this.config.left + this.config.right)
-            .attr('height', this.config.height + this.config.top + this.config.bottom);
+            .attr('height', this.config.height + this.config.top + this.config.bottom)
+            .attr('class', 'card');
     }
 
     createMargins() {
@@ -43,22 +62,89 @@ export class Maps {
             .attr("transform", `translate(${this.config.left},${this.config.top})`)
     }
 
-    
+
     // LEER: https://stackoverflow.com/questions/33087405/using-queue-to-load-multiple-files-and-assign-to-globals
     async render(myfile) {
         // Map and projection
+        let center_map = [-57.82134,-5.15357]
         let projection = d3.geoMercator()
-        .rotate([0,0])
-        .center([-57.82134,-5.15357])                // GPS of location to zoom on
-        .scale(8000)                       // This is like the zoom
-        .translate([ this.config.width/2, this.config.height/2 ])
+                            .rotate([0,0])
+                            .center(center_map)      // GPS of location to zoom on
+                            .scale(2000)                       // This is like the zoom
+                            .translate([ this.config.width/2, this.config.height/2 ])
+        this.path = d3.geoPath()
+                    .projection(projection);
+
+        this.x0 = [-7.5, -9];
+        this.y0 = [ -75,-74];
+        this.scale_acum = 1.2;
+
+        this.xScale = d3.scaleLinear().domain(this.x0).range([0, this.config.width]);
+        this.yScale = d3.scaleLinear().domain(this.y0).range([this.config.height, 0]);
+        // LIMITES MAP: Y [ -75,-74] , X [-7.5, -9]
+        // this.brush = d3.brush().on("end", function() {
+        //     let s = d3.event.selection;
+        //     if (!s) {
+        //         if (!this.idleTimeout) return this.idleTimeout = setTimeout(function() {
+        //             this.idleTimeout = null; // necesario
+        //         }.bind(this), this.idleDelay);
+        //         this.xScale.domain(this.x0);
+        //         this.yScale.domain(this.y0);
+
+        //         // this.zoom();
+        //         let t = this.svg.transition().duration(750);
+        //         this.svg.selectAll("path").transition(t)
+        //         .attr("transform", "scale(1.0)");
+        //     } else {
+        //         this.xScale.domain([s[0][0], s[1][0]].map(this.xScale.invert, this.xScale));
+        //         this.yScale.domain([s[1][1], s[0][1]].map(this.yScale.invert, this.yScale));
+        //         this.svg.select(".brush").call(this.brush.move, null);
+
+        //         // this.zoom();
+        //         let t = this.svg.transition().duration(750);
+        //         // distancia base
+        //         let dist_base = dist(0,0, this.config.width, this.config.height);
+        //         let dist_brush = dist(s[0][0], s[1][1], s[1][0], s[0][1]);
+        //         let scale_ = dist_brush*1.0 / dist_base;
+        //         let real_scale = 1.0 / scale_;
+        //         let cx_ = s[0][0] + (s[1][0]-s[0][0])/2.0;
+        //         let cy_ = s[1][1] + (s[0][1]-s[1][1])/2.0;
+
+        //         let offsetX = cx_ + this.config.width/2;
+        //         let offsetY = cy_ + this.config.height/2;
+        //         this.scale_acum = real_scale;
+        //         // set center
+        //         // translate, acumular -s e escala
+        //         this.svg.selectAll("path").transition(t)
+        //         .attr("transform", 
+        //         `translate(${offsetX}, ${offsetY}) 
+        //         scale(${this.scale_acum}) 
+        //         translate(${-offsetX}, ${-offsetY})`);
+                
+        //         // translate(${-s[0][0] + this.config.left}, ${-s[1][1] + this.config.top}) scale(${real_scale})
+        //         console.log('2:', real_scale);//.map(this.xScale.invert, this.xScale));  translate(${this.config.width/2 - cx_}, ${this.config.height/2 - cy_}) 
+        //     }
+            
+        // }.bind(this)
+        // );
+
+        this.svg.call(d3.zoom()
+                .scaleExtent([0.5, 18])
+                //.translateExtent([[0,0], [this.config.width, this.config.height]])
+                //.extent([[0, 0], [this.config.width, this.config.height]])
+                .on('zoom', function() {
+                    this.svg.selectAll("path")
+                            .attr("transform", d3.event.transform);
+                    //console.log('zoom:', d3.event.transform);
+                }.bind(this)));
+
 
         // Load external data and boot "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
-        await d3.json(myfile, function(data){
+       await d3.json(myfile, function(data){
 
             // Filter data
-            //data.features = data.features.filter( function(d){return d.properties.name=="France"} )
-            this.data = data.features;
+            //data.features = data.features.filter( function(d){return d.properties.uf=="AM"} )
+            this.data = data;
             // Draw the map
             this.svg.append("g")
                 .selectAll("path")
@@ -66,65 +152,34 @@ export class Maps {
                 .enter()
                 .append("path")
                 .attr("fill", "#b8b8b8")
-                .attr("d", d3.geoPath()
-                    .projection(projection)
-                )
-                .style("stroke", "black")
-                .style("opacity", .3)
-            
-            // zoomed()
-            
+                .attr("d", this.path)
+                .style("stroke", "red")
+                .style("opacity", .3);
+
+            // this.svg.append("g")
+            //         .attr("class", "brush")
+            //         .call(this.brush);
+            this.svg.exit().remove()
         }.bind(this));
 
-        
+        await d3.json('../assets/dataset/EstadosBR_IBGE_LLWGS84.geojson', function(data){
 
-        //zoom  ctr+k+u
-        // var g = this.svg
-        // this.zoom = d3.zoom()
-        //     .scaleExtent([1, 10])
-        //     .on('zoom', function() {
-        //         g.append("g")
-        //             .selectAll('path')
-        //                 .attr('transform', d3.event.transform);
-        //                 console.log("chegou")
-        //         g.append("g")
-        //             .selectAll("d")
-        //                 .attr('transform', d3.event.transform);
-        //                 console.log("chegou2")
-        // });
+            // Filter data
+            //this.data = data;
+            //data.features = data.features.filter( function(d){return d.properties.ESTADO=="RR"} )
+            // Draw the map
+            this.svg.append("g")
+                .selectAll("path")
+                .data(data.features)
+                .enter()
+                .append("path")
+                .attr("fill", "#b8b8b8")
+                .attr("d", this.path)
+                .style("stroke", "black")
+                .style("opacity", .3);
+            this.svg.exit().remove()
+        }.bind(this));
 
-        // this.svg.call(this.zoom);
-
-
-        // //zoom map ctrl+k+c
-        // function zoomed(){  
-                        
-        //     this.svg.append("g")
-        //     .selectAll("path")
-        //     .data(data.features)
-        //     .enter()
-        //     .append("path")
-        //     .attr("transform", d3.event.transform);
-        //     console.log(d3.event.transform);
-        // } 
-    
-        // this.zoom = d3.zoom()
-        //     .scaleExtent([1, 8])
-        //     .translateExtent([[0,0], [this.config.width, this.config.height]])
-        //     .extent([[0, 0], [this.config.width, this.config.height]])
-        //     .on("zoom", zoomed);
-        
-        // this.svg.append("g")
-        //     .attr('class','zoom')
-        //     .attr("width", this.config.width)
-        //     .attr("height", this.config.height)
-        //     .call(this.zoom);
-
-        // console.log("chegou")
-        //bibliografias:
-        //https://bl.ocks.org/d3noob/c056543aff74a0ac45bef099ee6f5ff4
-        //https://stackoverflow.com/questions/35357164/d3-zoom-cannot-read-property-apply-of-undefined/35357269
-        //importante: https://stackoverflow.com/questions/21550534/set-d3-zoom-scaleextent-to-positive-values
 
     }
 
@@ -141,6 +196,7 @@ export class Maps {
         let k = this.config.height / this.config.width;
         this.x0 = [-4.5, 4.5];
         this.y0 = [-4.5 * k, 4.5 * k];
+        console.log(this.x0, this.y0);
         this.xScale = d3.scaleLinear().domain(this.x0).range([0, this.config.width]);
         this.yScale = d3.scaleLinear().domain(this.y0).range([this.config.height, 0]);
         let z = d3.scaleOrdinal(d3.schemeCategory10);
@@ -160,7 +216,7 @@ export class Maps {
                 this.yScale.domain(this.y0);
             } else {
                 console.log('2:', this.xScale);
-    
+
                 this.xScale.domain([s[0][0], s[1][0]].map(this.xScale.invert, this.xScale));
                 this.yScale.domain([s[1][1], s[0][1]].map(this.yScale.invert, this.yScale));
                 this.svg.select(".brush").call(this.brush.move, null);
@@ -174,7 +230,7 @@ export class Maps {
                 .attr("cy", d => this.yScale(d[1]));
         }.bind(this)
         );
-        
+
         this.svg.selectAll("circle")
             .data(points)
             .enter().append("circle")
@@ -186,21 +242,21 @@ export class Maps {
                 .attr("class", "axis axis--x")
                 .attr("transform", "translate(0," + (this.config.height - 10) + ")")
                 .call(this.xAxis);
-            
+
         this.svg.append("g")
             .attr("class", "axis axis--y")
             .attr("transform", "translate(10,0)")
             .call(this.yAxis);
-        
+
         this.svg.selectAll(".domain")
             .style("display", "none");
-        
+
         this.svg.append("g")
             .attr("class", "brush")
             .call(this.brush);
-        
+
     }
-    
-    
+
+
 
 }
