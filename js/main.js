@@ -1,5 +1,5 @@
-import { Dados } from './dados.js'
 import { Maps } from './maps.js'
+import { TimeSeries} from './timeSeries.js'
 
 window.loadMyData = function loadMyData(selectObject) {
     console.log('Load-Data');
@@ -8,7 +8,7 @@ window.loadMyData = function loadMyData(selectObject) {
 
 // ----------------------- Main --------------------------
 // Load by default bar-chart
-function main() {
+async function main() {
     let confsvg = {
       div: '#main', 
       width: 600, 
@@ -18,16 +18,23 @@ function main() {
       bottom: 30, 
       right: 30
     };
-    let myfile = '../assets/dataset/deter_amz_2015-01-01_2020-11-02/deter_amz.geojson';
+    let desmatamento_geojson = '../assets/dataset/deter_amz_2015-01-01_2020-11-02/deter_amz.geojson';
 
-    //console.log(dados.data.features.map(function(d) { return d.properties.gid}))
+    // Render Map
     let map = new Maps(confsvg);
-    //map.buildMapMercator(dados.data)
-    map.render(myfile);
-    //map.test_brush();
-    console.log('Finish-render..')
+    await map.loadData(desmatamento_geojson);
+    map.render();
+    map.loadFilters();
+
+    // Time series
+    let timeSeries = new TimeSeries();
+    await timeSeries.setData(map.data);
+    //timeSeries.initializeAxis();
+    timeSeries.updateChart();
+
 }
 
+main();
 
 // ------ Global Variables ----
 //let dados = new Dados();

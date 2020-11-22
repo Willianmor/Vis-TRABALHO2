@@ -2,27 +2,13 @@
 // https://codepen.io/ssz360/pen/jOPMwme
 //uncomment  ctr+k+u
 //comment  ctr+k+c
-function diff (num1, num2) {
-    if (num1 > num2) {
-        return (num1 - num2);
-    } else {
-        return (num2 - num1);
-    }
-};
-  
-function dist (x1, y1, x2, y2) {
-    var deltaX = diff(x1, x2);
-    var deltaY = diff(y1, y2);
-    var dist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-    return (dist);
-};
+
+import {showMessage, fillOptionsSelect, sortByDate} from './utils.js'
 
 export class Maps {
     constructor(config) {
         this.config = config;
-
         this.svg = null;
-        this.margins = null;
 
         this.x0 = null;
         this.y0 = null;
@@ -31,9 +17,12 @@ export class Maps {
         this.xAxis = null;
         this.yAxis = null;
 
+        this.center_map = [-57.82134,-5.15357];
+        this.scale = 1000;
         this.projection = null;
         this.path = null;
         this.data = null;
+        this.dataGeo = null;
         this.zoom =null;
 
         // Test Brush
@@ -42,8 +31,7 @@ export class Maps {
         this.idleDelay = 350;
 
         this.createSvg();
-        this.createMargins();
-        }
+    }
 
     createSvg() {
         this.svg = d3.select(this.config.div)
@@ -56,15 +44,8 @@ export class Maps {
             .attr('class', 'card');
     }
 
-    createMargins() {
-        this.margins = this.svg
-            .append('g')
-            .attr("transform", `translate(${this.config.left},${this.config.top})`)
-    }
-
-
     // LEER: https://stackoverflow.com/questions/33087405/using-queue-to-load-multiple-files-and-assign-to-globals
-    async render(myfile) {
+    async render_deprecated(myfile) {
         // Map and projection
         let center_map = [-57.82134,-5.15357]
         let projection = d3.geoMercator()
@@ -140,7 +121,7 @@ export class Maps {
 
 
         // Load external data and boot "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
-       await d3.json(myfile, function(data){
+        await d3.json(myfile, function(data){
 
             // Filter data
             //data.features = data.features.filter( function(d){return d.properties.uf=="AM"} )
@@ -159,28 +140,87 @@ export class Maps {
             // this.svg.append("g")
             //         .attr("class", "brush")
             //         .call(this.brush);
-            this.svg.exit().remove()
+            this.svg.exit().remove();
+
+            console.log('termino?', this.data);
         }.bind(this));
 
-        await d3.json('../assets/dataset/EstadosBR_IBGE_LLWGS84.geojson', function(data){
+        
 
-            // Filter data
-            //this.data = data;
-            //data.features = data.features.filter( function(d){return d.properties.ESTADO=="RR"} )
-            // Draw the map
-            this.svg.append("g")
+        // await d3.json('../assets/dataset/EstadosBR_IBGE_LLWGS84.geojson', function(data){
+
+        //     // Filter data
+        //     //this.data = data;
+        //     //data.features = data.features.filter( function(d){return d.properties.ESTADO=="RR"} )
+        //     // Draw the map
+        //     this.svg.append("g")
+        //         .selectAll("path")
+        //         .data(data.features)
+        //         .enter()
+        //         .append("path")
+        //         .attr("fill", "#b8b8b8")
+        //         .attr("d", this.path)
+        //         .style("stroke", "black")
+        //         .style("opacity", .3);
+        //     this.svg.exit().remove()
+        // }.bind(this));
+
+
+    }
+
+    async loadData(myfile) {
+        showMessage('div.load_data', 1500);
+        let [dataGeo, dataDesmatamento] = await Promise.all([
+                d3.json('../assets/dataset/EstadosBR_IBGE_LLWGS84.geojson'),
+                d3.json(myfile),
+                ])
+                
+        this.data = dataDesmatamento.features;
+        sortByDate(this.data);
+        this.dataGeo = dataGeo;
+    }
+
+    render() {
+        // Map and projection
+        let projection = d3.geoMercator()
+                            .rotate([0,0])
+                            .center(this.center_map)      // GPS of location to zoom on
+                            .scale(this.scale)                       // This is like the zoom
+                            .translate([ this.config.width/2, this.config.height/2 ])
+        this.path = d3.geoPath()
+                    .projection(projection);
+        
+        // Draw the map
+        this.svg.append("g")
                 .selectAll("path")
-                .data(data.features)
+                .data(this.dataGeo.features)
+                .enter().append("path")
+                    .attr("fill", "#b8b8b8")
+                    .attr("d", this.path)
+                    .style("stroke", "black")
+                    .style("opacity", .3);
+
+        // Add data de quemadas
+        // Filter data
+        let data_filter = this.data.filter( d =>  d.properties.uf=="AM" );
+        this.svg.selectAll("myPath")
+                .data(data_filter)
                 .enter()
                 .append("path")
-                .attr("fill", "#b8b8b8")
-                .attr("d", this.path)
-                .style("stroke", "black")
-                .style("opacity", .3);
-            this.svg.exit().remove()
-        }.bind(this));
+                    .attr("fill", "#b8b8b8")
+                    .attr("d", this.path)
+                    .style("stroke", "red")
+                    .style("opacity", .3);
+            
+        this.svg.exit().remove();
 
+        showMessage('div.render_data', 1500); 
 
+    }
+
+    loadFilters() {
+        let optionsStates = new Set(d3.map(this.data, d => d.properties.uf));
+        fillOptionsSelect('filtro_estados', optionsStates);
     }
 
     // Test
