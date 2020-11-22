@@ -1,0 +1,65 @@
+#chart01, #chart02, #chart03, #chart04{
+    display: inline-block;
+	font: 10px sans-serif;
+}
+
+#svg {
+    background: #ccc;
+}
+
+circle {
+	stroke: black;
+	fill-opacity: 0.7;
+}
+
+text {
+    font-family: sans-serif;
+	fill: #635F5D;
+}
+
+rect {
+	stroke: #C0C0BB;
+}
+
+.zoom {
+  fill: rgb(0,0,0,0);
+  stroke: rgb(0,0,0,0);
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+  
+.tick text {
+    fill: black;
+}
+
+.tick line {
+    stroke: #C0C0BB;
+	stroke-opacity: 0.7;
+}
+
+.axisLabel {
+    font-size: 1.0em;
+    fill: black;
+}
+
+.xAxis path {
+    stroke: #ccc;
+}
+
+.yAxis path {
+    stroke: #ccc;
+}
+
+.line-path {
+	fill: none;
+	stroke-width: 2;
+	stroke-opacity: 0.7;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	mix-blend-mode: multiply;
+}
+
+.legend rect {
+	stroke: #635F5D;
+}
