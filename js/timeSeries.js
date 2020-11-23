@@ -15,16 +15,11 @@ export class TimeSeries {
 
           this.svg = null;
 
-          this.xScale = null;
-          this.yScale = null;
-          this.xAxis = null;
-          this.yAxis = null
-
           this.createSvg();
     }
 
     createSvg() {
-        this.svg = d3.select(confTimeSeries.div)
+        this.svg = d3.select(this.config.div)
             .append("svg")
             .attr('id', 'svg')
             .attr('x', 10)
@@ -43,32 +38,6 @@ export class TimeSeries {
                 cy: +d.properties.areatotalk,
             }
         });
-
-        // this.data = await d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv", d => {
-        //     return {
-        //         cx : d3.timeParse("%Y-%m-%d")(d.date), cy : d.value
-        //     }});
-
-        //this.data = this.data.slice(0, 1000);
-        //console.log(this.data);
-    }
-
-    initializeAxis() {
-        // Add X axis --> it is a date format
-        this.xScale = d3.scaleTime()
-            .domain(d3.extent(this.data, d => d.cx))
-            .range([this.config.left, this.config.width - this.config.right]);
-        this.xAxis = this.svg.append("g")
-            .attr("transform", `translate(0,${this.config.height - this.config.bottom})`)
-            .call(d3.axisBottom(this.xScale));
-
-        // Add Y axis
-        this.yScale = d3.scaleLinear()
-            .domain([0, d3.max(this.data, d => d.cy)])
-            .range([this.config.height - this.config.bottom, this.config.top]);
-        this.yAxis = this.svg.append("g")
-            .attr("transform", `translate(${this.config.left},0)`)
-            .call(d3.axisLeft(this.yScale));
     }
 
     updateChart(){

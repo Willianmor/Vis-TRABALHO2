@@ -1,4 +1,4 @@
-import { lineChart } from './lineChart.js';
+import { BarVertical } from './barVerticalChart.js';
 import { Maps } from './maps.js'
 import { TimeSeries} from './timeSeries.js'
 
@@ -49,6 +49,11 @@ async function main() {
     //timeSeries.initializeAxis();
     timeSeries.updateChart();
 
+    // Bar Vertical
+    let filtroestados = new BarVertical();
+    await filtroestados.setData(map.data);
+    filtroestados.initializeAxis();
+    filtroestados.updateChart();
 }
 
 main();

@@ -213,14 +213,13 @@ export class Maps {
                     .style("opacity", .3);
             
         this.svg.exit().remove();
-
-        showMessage('div.render_data', 1500); 
-
     }
 
     loadFilters() {
         let optionsStates = new Set(d3.map(this.data, d => d.properties.uf));
         fillOptionsSelect('filtro_estados', optionsStates);
+
+        showMessage('div.render_data', 1500); 
     }
 
     // Test
