@@ -1,3 +1,5 @@
+import { BarVertical } from './barVerticalChart.js';
+
 let confTimeSeries = {
     div: '#time_series', 
     width: 600, 
@@ -8,12 +10,17 @@ let confTimeSeries = {
     right: 0
 };
 
+// LEER: D3 6.0 migration guide
+// https://observablehq.com/@d3/d3v6-migration-guide
 export class TimeSeries {
     constructor(data) {
           this.data = null;
           this.config = confTimeSeries;
 
           this.svg = null;
+
+          this.data_origin = null;
+          this.bar_vertical_states = null;
 
           this.createSvg();
     }
@@ -31,6 +38,8 @@ export class TimeSeries {
     }
 
     async setData(data) {
+        this.data_origin = data;
+
         let parseDate = d3.timeParse("%Y/%m/%d");
         this.data = await d3.map(data, function(d) {
             return {
@@ -67,6 +76,41 @@ export class TimeSeries {
             .y0(y(0))
             .y1(function(d) { return y(d.cy) })
         );
+        
+        let parseDate = d3.timeParse("%Y/%m/%d");
+        // Brush
+        let brush = d3.brushX()
+            .extent([
+                [0, 0],
+                [this.config.width, this.config.height]
+            ]).on("end", function(event) { // 'brush end'
+                if (!event.sourceEvent) return; // Only transition after input.
+                if (!event.selection) return; // Ignore empty selections.
                 
+                let s = event.selection;
+                let s_selection = s.map(x.invert, x);
+
+                let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > new Date(s_selection[0]).getTime() &&
+                                                    new Date(parseDate(d.properties.date)).getTime() < new Date(s_selection[1]).getTime() );
+                this.updateBarVertical(filter_date);
+                
+            }.bind(this));
+        this.svg.append("g")
+                .attr("class", "brush")
+                .call(brush);
+                
+    }
+
+    // ================================== Bar-Vertical Chart (Filtro Estados) ================================
+    async createBarVertical() {
+        this.bar_vertical_states = new BarVertical();
+        await this.bar_vertical_states.setData(this.data_origin);
+        this.bar_vertical_states.initializeAxis();
+        this.bar_vertical_states.updateChart();
+    }
+    async updateBarVertical(filter_date) {
+        await this.bar_vertical_states.setData(filter_date);
+        this.bar_vertical_states.updateChart();
+        // console.log(filter_date);
     }
 }
