@@ -1,4 +1,5 @@
 import { BarVertical } from './barVerticalChart.js';
+import { Maps } from './maps.js';
 
 let confTimeSeries = {
     div: '#time_series', 
@@ -13,7 +14,7 @@ let confTimeSeries = {
 // LEER: D3 6.0 migration guide
 // https://observablehq.com/@d3/d3v6-migration-guide
 export class TimeSeries {
-    constructor(data) {
+    constructor() {
           this.data = null;
           this.config = confTimeSeries;
 
@@ -21,6 +22,7 @@ export class TimeSeries {
 
           this.data_origin = null;
           this.bar_vertical_states = null;
+          this.mapa = new Maps();
 
           this.createSvg();
     }
@@ -92,13 +94,26 @@ export class TimeSeries {
 
                 let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > new Date(s_selection[0]).getTime() &&
                                                     new Date(parseDate(d.properties.date)).getTime() < new Date(s_selection[1]).getTime() );
-                this.updateBarVertical(filter_date);
                 
+                this.updateBarVertical(filter_date);
+                this.updateMapa(s_selection);
             }.bind(this));
         this.svg.append("g")
                 .attr("class", "brush")
                 .call(brush);
                 
+    }
+
+    // ================================== Mapa ================================
+    createMapa(dataDesmatamento, dataGeo) {
+        this.mapa.initData(dataDesmatamento, dataGeo);
+        this.mapa.render();
+        this.mapa.loadFilters();
+    }
+
+    updateMapa(s_selection) {
+        //this.mapa.setData(filter_date);
+        this.mapa.updateMapa(s_selection);
     }
 
     // ================================== Bar-Vertical Chart (Filtro Estados) ================================

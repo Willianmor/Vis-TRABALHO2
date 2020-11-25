@@ -1,53 +1,40 @@
 import { Maps } from './maps.js'
 import { TimeSeries} from './timeSeries.js'
+import {showMessage, sortByDate} from './utils.js'
 
 window.loadMyData = function loadMyData(selectObject) {
     console.log('Load-Data');
     main();
-  }
+}
+
+async function loadData(myfile) {
+  showMessage('div.load_data', 1500);
+  let [dataGeo, dataDesmatamento] = await Promise.all([
+          d3.json('../assets/dataset/EstadosBR_IBGE_LLWGS84.geojson'),
+          d3.json(myfile),
+          ])
+  dataDesmatamento = dataDesmatamento.features;
+  sortByDate(dataDesmatamento)
+  return [dataGeo, dataDesmatamento];
+}
 
 // ----------------------- Main --------------------------
 // Load by default bar-chart
 async function main() {
-    let confsvg = {
-      div: '#main', 
-      width: 600, 
-      height: 400, 
-      top: 30, 
-      left: 10, 
-      bottom: 30, 
-      right: 30
-
-      //Parametros necessários para construir o gráfico de linhas
-      //height2:40,
-      //top:10,
-      //bottom:110,
-      //left:40,
-      //right:15,
-      //top2:330,
-      //right:15,
-      //bottom2:30,
-      //left2:40
-
-      //Inserindo uma segunda margem abaixo para a barra de zoom.
-      //scope.margins = {top: 10, bottom: 110, left: 40, right: 15};
-      //scope.margins2 = {top: 330, right: 15, bottom: 30, left: 40}
-
-    };
+    
     let desmatamento_geojson = '../assets/dataset/deter_amz_2015-01-01_2020-11-02/deter_amz.geojson';
 
-    // Render Map
-    let map = new Maps(confsvg);
-    await map.loadData(desmatamento_geojson);
-    map.render();
-    map.loadFilters();
+    // Load Data
+    let [dataGeo, dataDesmatamento] = await loadData(desmatamento_geojson);
 
     // Time series
     let timeSeries = new TimeSeries();
-    await timeSeries.setData(map.data);
+    await timeSeries.setData(dataDesmatamento);
     //timeSeries.initializeAxis();
     timeSeries.updateChart();
     
+
+    timeSeries.createMapa(dataDesmatamento, dataGeo);
     timeSeries.createBarVertical();
 }
 

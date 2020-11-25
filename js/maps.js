@@ -5,9 +5,19 @@
 
 import {showMessage, fillOptionsSelect, sortByDate} from './utils.js'
 
+let confsvg = {
+    div: '#main', 
+    width: 600, 
+    height: 400, 
+    top: 30, 
+    left: 10, 
+    bottom: 30, 
+    right: 30
+};
+
 export class Maps {
-    constructor(config) {
-        this.config = config;
+    constructor() {
+        this.config = confsvg;
         this.svg = null;
 
         this.x0 = null;
@@ -18,7 +28,7 @@ export class Maps {
         this.yAxis = null;
 
         this.center_map = [-57.82134,-5.15357];
-        this.scale = 1000;
+        this.scale = 1500;
         this.projection = null;
         this.path = null;
         this.data = null;
@@ -29,8 +39,14 @@ export class Maps {
         this.brush = null;
         this.idleTimeout;
         this.idleDelay = 350;
+        this.colorStrokeBase = 'orange';
 
         this.createSvg();
+    }
+
+    initData(data, dataGeo) {
+        this.data = data;
+        this.dataGeo = dataGeo;
     }
 
     createSvg() {
@@ -179,6 +195,9 @@ export class Maps {
         sortByDate(this.data);
         this.dataGeo = dataGeo;
     }
+    async setData(data) {
+        this.data = data
+    }
 
     render() {
         // Map and projection
@@ -202,17 +221,45 @@ export class Maps {
 
         // Add data de quemadas
         // Filter data
-        let data_filter = this.data.filter( d =>  d.properties.uf=="AM" );
+        //let data_filter = this.data.filter( d =>  d.properties.uf=="AM" );
         this.svg.selectAll("myPath")
-                .data(data_filter)
+                .data(this.data)
                 .enter()
                 .append("path")
+                    .attr('class','desmatamento')
                     .attr("fill", "#b8b8b8")
                     .attr("d", this.path)
-                    .style("stroke", "red")
-                    .style("opacity", .3);
-            
+                    .style("stroke", this.colorStrokeBase)
+                    .style("opacity", .7);
+        
+        this.svg.call(d3.zoom()
+            .scaleExtent([0.5, 18])
+            //.translateExtent([[0,0], [this.config.width, this.config.height]])
+            //.extent([[0, 0], [this.config.width, this.config.height]])
+            .on('zoom', function(event) {
+                this.svg.selectAll("path")
+                        .attr("transform", event.transform);
+                //console.log('zoom:', d3.event.transform);
+            }.bind(this)));
+
         this.svg.exit().remove();
+    }
+
+    updateMapa(s_selection) {
+        let parseDate = d3.timeParse("%Y/%m/%d");
+        let color  = (d) => {
+            if (
+                new Date(parseDate(d.properties.date)).getTime() > new Date(s_selection[0]).getTime() &&
+                new Date(parseDate(d.properties.date)).getTime() < new Date(s_selection[1]).getTime()
+            ) {
+                return 'green';
+            }else {
+                return this.colorStrokeBase;
+            }
+        }
+
+        this.svg.selectAll('.desmatamento')
+            .style('stroke', color);
     }
 
     loadFilters() {
