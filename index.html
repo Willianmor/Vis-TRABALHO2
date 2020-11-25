@@ -25,13 +25,19 @@
                 <!-- Filtros -->
                 <h5><span class="badge badge-secondary">1</span>Filtros</h5>
                 <div class="form-group row">
-                    <label class="col-sm-5 col-form-label" for="inlineFormCustomSelectPref">Estados</label>
+                    <label class="col-sm-5 col-form-label" for="inlineFormCustomSelectPref">Ano</label>
                     <select class="custom-select col-sm-7" id="filtro_estados" onchange="changeDadosColumna(this)"></select>
                 </div>
+                <!-- Time Series Chart -->
+                Exibindo dados para todo o intervalo do gráfico:
+                <div id="time_series"></div>
+            </div>
+        </div>    
+        <div class="row">  
+            <div class="col">
                 <!-- Bar-Vertical Chart -->
                 <div id="bar_vertical_estados" class="scrolling-wrapper card"></div>
-            </div>
-            
+            </div>  
             <div class="col">
                 <!-- Chart -->
                 <div id="main" class="scrolling-wrapper"></div>

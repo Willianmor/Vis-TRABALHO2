@@ -39,7 +39,7 @@ export class Maps {
         this.brush = null;
         this.idleTimeout;
         this.idleDelay = 350;
-        this.colorStrokeBase = 'orange';
+        this.colorStrokeBase = '#b8b8b8';
 
         this.createSvg();
     }
@@ -221,7 +221,7 @@ export class Maps {
 
         // Add data de quemadas
         // Filter data
-        //let data_filter = this.data.filter( d =>  d.properties.uf=="AM" );
+        //let data_filter = this.data.filter( d =>  d.properties.uf=="MT" );
         this.svg.selectAll("myPath")
                 .data(this.data)
                 .enter()
@@ -230,6 +230,7 @@ export class Maps {
                     .attr("fill", "#b8b8b8")
                     .attr("d", this.path)
                     .style("stroke", this.colorStrokeBase)
+                    .style("stroke-width", 2)
                     .style("opacity", .7);
         
         this.svg.call(d3.zoom()
@@ -263,7 +264,8 @@ export class Maps {
     }
 
     loadFilters() {
-        let optionsStates = new Set(d3.map(this.data, d => d.properties.uf));
+        let parseDate = d3.timeParse("%Y/%m/%d");
+        let optionsStates = new Set(d3.map(this.data, d => new Date(parseDate(d.properties.date)).getFullYear()));
         fillOptionsSelect('filtro_estados', optionsStates);
 
         showMessage('div.render_data', 1500); 

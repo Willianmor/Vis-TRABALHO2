@@ -3,7 +3,7 @@ import { Maps } from './maps.js';
 
 let confTimeSeries = {
     div: '#time_series', 
-    width: 600, 
+    width: 1000, 
     height: 100, 
     top: 10, 
     left: 30, 
