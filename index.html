@@ -16,7 +16,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Trabalho 01</a>
+        <a class="navbar-brand" href="#">Trabalho Final</a>
     </nav>
 
     <div class="container">
@@ -26,10 +26,10 @@
                 <h5><span class="badge badge-secondary">1</span>Filtros</h5>
                 <div class="form-group row">
                     <label class="col-sm-5 col-form-label" for="inlineFormCustomSelectPref">Ano</label>
-                    <select class="custom-select col-sm-7" id="filtro_estados" onchange="changeDadosColumna(this)"></select>
+                    <select class="custom-select col-sm-7" id="filtro_estados" onchange="changeDataByDate(this)"></select>
                 </div>
                 <!-- Time Series Chart -->
-                Exibindo dados para todo o intervalo do gráfico:
+                Exibindo dados para todo o intervalo do gráfico: <span id="date_ini"></span> - <span id="date_fin"></span>
                 <div id="time_series"></div>
             </div>
         </div>    

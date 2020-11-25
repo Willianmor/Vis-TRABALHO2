@@ -1,10 +1,11 @@
 import { BarVertical } from './barVerticalChart.js';
 import { Maps } from './maps.js';
+import {formattedDate, fillOptionsSelect, showMessage} from './utils.js'
 
 let confTimeSeries = {
     div: '#time_series', 
     width: 1000, 
-    height: 100, 
+    height: 70, 
     top: 10, 
     left: 30, 
     bottom: 30, 
@@ -95,6 +96,9 @@ export class TimeSeries {
                 let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > new Date(s_selection[0]).getTime() &&
                                                     new Date(parseDate(d.properties.date)).getTime() < new Date(s_selection[1]).getTime() );
                 
+                $('#date_ini').html(formattedDate(new Date(s_selection[0])));
+                $('#date_fin').html(formattedDate(new Date(s_selection[1])));
+
                 this.updateBarVertical(filter_date);
                 this.updateMapa(s_selection);
             }.bind(this));
@@ -104,11 +108,22 @@ export class TimeSeries {
                 
     }
 
+    loadFilters() {
+        let parseDate = d3.timeParse("%Y/%m/%d");
+        let optionAnos = new Set(d3.map(this.data_origin, d => new Date(parseDate(d.properties.date)).getFullYear()));
+        fillOptionsSelect('filtro_estados', optionAnos);
+
+        // let test = new Set(d3.map(this.data, d => d.properties.classname));
+        $('#date_ini').html(formattedDate(new Date(parseDate(this.data_origin[0].properties.date))));
+        $('#date_fin').html(formattedDate(new Date(parseDate(this.data_origin[this.data_origin.length-1].properties.date))));
+        showMessage('div.render_data', 1500); 
+    }
+
     // ================================== Mapa ================================
     createMapa(dataDesmatamento, dataGeo) {
         this.mapa.initData(dataDesmatamento, dataGeo);
         this.mapa.render();
-        this.mapa.loadFilters();
+        this.loadFilters();
     }
 
     updateMapa(s_selection) {
