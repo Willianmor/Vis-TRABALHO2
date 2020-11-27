@@ -36,6 +36,7 @@ async function main() {
 
     timeSeries.createMapa(dataDesmatamento, dataGeo);
     timeSeries.createBarVertical();
+    timeSeries.createPieChart();
 }
 
 main();

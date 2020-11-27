@@ -1,4 +1,5 @@
 import { BarVertical } from './barVerticalChart.js';
+import { PieChart } from './pieChart.js';
 import { Maps } from './maps.js';
 import {formattedDate, fillOptionsSelect, showMessage} from './utils.js'
 
@@ -100,6 +101,7 @@ export class TimeSeries {
                 $('#date_fin').html(formattedDate(new Date(s_selection[1])));
 
                 this.updateBarVertical(filter_date);
+                this.updatePieChart(filter_date);
                 this.updateMapa(s_selection);
             }.bind(this));
         this.svg.append("g")
@@ -128,7 +130,7 @@ export class TimeSeries {
 
     updateMapa(s_selection) {
         //this.mapa.setData(filter_date);
-        this.mapa.updateMapa(s_selection);
+        this.mapa.updateMapa(s_selection, this.pie_chart_desmatamento.class_quemadas); // pie_chart_desmatamento tem que ser calculado antes
     }
 
     // ================================== Bar-Vertical Chart (Filtro Estados) ================================
@@ -143,4 +145,17 @@ export class TimeSeries {
         this.bar_vertical_states.updateChart();
         // console.log(filter_date);
     }
+
+    // ================================== Mapa ================================
+    async createPieChart() {
+        this.pie_chart_desmatamento = new PieChart();
+        await this.pie_chart_desmatamento.setData(this.data_origin);
+        this.pie_chart_desmatamento.updateChart();
+    }
+
+    async updatePieChart(filter_date) {
+        await this.pie_chart_desmatamento.setData(filter_date);
+        this.pie_chart_desmatamento.updateChart();
+    }
+
 }

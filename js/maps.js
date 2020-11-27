@@ -3,12 +3,12 @@
 //uncomment  ctr+k+u
 //comment  ctr+k+c
 
-import {showMessage, fillOptionsSelect, sortByDate} from './utils.js'
+import {showMessage, getCoresDesmatamento, sortByDate} from './utils.js'
 
 let confsvg = {
     div: '#main', 
     width: 600, 
-    height: 400, 
+    height: 600, 
     top: 30, 
     left: 10, 
     bottom: 30, 
@@ -106,7 +106,7 @@ export class Maps {
                     .attr("fill", "#b8b8b8")
                     .attr("d", this.path)
                     .style("stroke", this.colorStrokeBase)
-                    .style("stroke-width", 2)
+                    .style("stroke-width", 3)
                     .style("opacity", .7);
         
         this.svg.call(d3.zoom()
@@ -122,14 +122,31 @@ export class Maps {
         this.svg.exit().remove();
     }
 
-    updateMapa(s_selection) {
+    updateMapa(s_selection, class_desmatamento) {
         let parseDate = d3.timeParse("%Y/%m/%d");
+        let cors_dematamento = getCoresDesmatamento();
         let color  = (d) => {
             if (
                 new Date(parseDate(d.properties.date)).getTime() > new Date(s_selection[0]).getTime() &&
                 new Date(parseDate(d.properties.date)).getTime() < new Date(s_selection[1]).getTime()
             ) {
-                return 'green';
+                if(d.properties.classname===class_desmatamento[0])
+                    return cors_dematamento[0];
+                if(d.properties.classname===class_desmatamento[1])
+                    return cors_dematamento[1];
+                if(d.properties.classname===class_desmatamento[2])
+                    return cors_dematamento[2];
+                if(d.properties.classname===class_desmatamento[3])
+                    return cors_dematamento[3];
+                if(d.properties.classname===class_desmatamento[4])
+                    return cors_dematamento[4];
+                if(d.properties.classname===class_desmatamento[5])
+                    return cors_dematamento[5];
+                if(d.properties.classname===class_desmatamento[6])
+                    return cors_dematamento[6];
+                else{
+                    return this.colorStrokeBase;
+                }
             }else {
                 return this.colorStrokeBase;
             }

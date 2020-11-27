@@ -3,6 +3,10 @@ export function getEstados() {
     return [];
 }
 
+export function getCoresDesmatamento() {
+    return ['#FF0000', '#006400', '#8B4513', '#FFA500', '#FFF68F', '#CD8162', '#FFFF00'];
+}
+
 export function showMessage(elementStr, delay) {
     $( elementStr ).fadeIn( 300 ).delay( delay ).fadeOut( 400 );
 }
