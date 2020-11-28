@@ -155,6 +155,8 @@ export class TimeSeries {
 
     async updatePieChart(filter_date) {
         await this.pie_chart_desmatamento.setData(filter_date);
+        this.pie_chart_desmatamento.svg.remove();
+        this.pie_chart_desmatamento.createSvg();
         this.pie_chart_desmatamento.updateChart();
     }
 
