@@ -61,30 +61,16 @@ export class PieChart {
     let arc = d3.arc()
         .innerRadius(0)
         .outerRadius(Math.min(this.config.width, this.config.height) / 2 - 1)
-    // let arcLabel = {
-    //     let radius = Math.min(width, height) / 2 * 0.8;
-    //     return d3.arc().innerRadius(radius).outerRadius(radius);
-    //   }
+    let arcLabel = () => {
+        let radius = Math.min(this.config.width, this.config.height) / 2 * 0.8;
+        return d3.arc().innerRadius(radius).outerRadius(radius);
+    }
     let pie = d3.pie()
         .sort(null)
         .value(d => d.value);
     let arcs = pie(this.data);
 
-    // Create the u variable
-    // let u = this.svg.attr("stroke", "white")
-    //         .selectAll("path")
-    //         .data(arcs)
-    // u.enter()
-    //         .append("path") // Adicione um novo rect para cada novo elemento
-    //         .merge(u) // obter os elementos já existentes também
-    //         .transition() // e aplicar mudanças a todos eles
-    //         .duration(1500)
-    //         .attr("fill", d => color(d.data.name))
-    //         .attr("d", arc)
-    //         .append("title")
-    //         .text(d => `${d.data.name}: ${d.data.value.toLocaleString()}`)
-    // u.exit().remove()
-
+    // Pie Chart
     this.svg.append("g")
         .attr("stroke", "white")
         .selectAll("path")
@@ -94,7 +80,24 @@ export class PieChart {
             .attr("d", arc)
             .append("title")
             .text(d => `${d.data.name}: ${d.data.value.toLocaleString()}`);
-    
+    // Labels
+    // this.svg.append("g")
+    //     .attr("font-family", "sans-serif")
+    //     .attr("font-size", 12)
+    //     .attr("text-anchor", "middle")
+    //     .selectAll("text")
+    //     .data(arcs)
+    //     .join("text")
+    //     .attr("transform", d => `translate(${arcLabel.centroid(d)})`)
+    //     .call(text => text.append("tspan")
+    //         .attr("y", "-0.4em")
+    //         .attr("font-weight", "bold")
+    //         .text(d => d.data.name))
+    //     .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
+    //         .attr("x", 0)
+    //         .attr("y", "0.7em")
+    //         .attr("fill-opacity", 0.7)
+    //         .text(d => d.data.value.toLocaleString()));
   }
 
 }
