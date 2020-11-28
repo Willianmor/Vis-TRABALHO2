@@ -2,9 +2,21 @@
   fill: steelblue;
   clip-path: url(#clip);
 }
-  
-.area :hover {
-  fill: red;
+.myaxis line{
+  opacity: 0.3;
+}
+/* Turn off every features */
+.mybar:hover{
+  opacity:0.7;
+}
+.mypie:hover{
+  opacity:0.5;
+  stroke-width: 3;
+  /*stroke: rgb(42, 42, 41);*/
+}
+
+.grid {
+  border: 1px solid red;
 }
 
 .zoom {
