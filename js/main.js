@@ -22,7 +22,7 @@ async function loadData(myfile) {
 // Load by default bar-chart
 async function main() {
     
-    let desmatamento_geojson = '../assets/dataset/deter_amz_2015-01-01_2020-11-02/deter_amz.geojson';
+    let desmatamento_geojson = '../assets/dataset/deter_amz.geojson';
 
     // Load Data
     let [dataGeo, dataDesmatamento] = await loadData(desmatamento_geojson);
