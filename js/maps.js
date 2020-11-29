@@ -3,7 +3,7 @@
 //uncomment  ctr+k+u
 //comment  ctr+k+c
 
-import {showMessage, getCoresDesmatamento, sortByDate} from './utils.js'
+import {showMessage, getCoresDesmatamento, sortByDate, filterByState, globalValues} from './utils.js'
 
 let confsvg = {
     div: '#main', 
@@ -97,9 +97,9 @@ export class Maps {
 
         // Add data de quemadas
         // Filter data
-        let data_filter = this.data.filter( d =>  d.properties.uf=="MT" );
+        //let data_filter = this.data.filter( d =>  d.properties.uf=="MT" );
         this.svg.selectAll("myPath")
-                .data(data_filter)
+                .data(this.data)
                 .enter()
                 .append("path")
                     .attr('class','desmatamento')
@@ -122,27 +122,28 @@ export class Maps {
         this.svg.exit().remove();
     }
 
-    updateMapa(s_selection, class_desmatamento) {
+    updateMapa() {
         let parseDate = d3.timeParse("%Y/%m/%d");
-        let cors_dematamento = getCoresDesmatamento();
+        let cors_dematamento = globalValues.cor_desmatamento;
         let color  = (d) => {
             if (
-                new Date(parseDate(d.properties.date)).getTime() > new Date(s_selection[0]).getTime() &&
-                new Date(parseDate(d.properties.date)).getTime() < new Date(s_selection[1]).getTime()
+                new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
+                new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin && 
+                filterByState(d.properties.uf, globalValues.filtro_estado)
             ) {
-                if(d.properties.classname===class_desmatamento[0])
+                if(d.properties.classname===globalValues.class_quemadas[0])
                     return cors_dematamento[0];
-                if(d.properties.classname===class_desmatamento[1])
+                if(d.properties.classname===globalValues.class_quemadas[1])
                     return cors_dematamento[1];
-                if(d.properties.classname===class_desmatamento[2])
+                if(d.properties.classname===globalValues.class_quemadas[2])
                     return cors_dematamento[2];
-                if(d.properties.classname===class_desmatamento[3])
+                if(d.properties.classname===globalValues.class_quemadas[3])
                     return cors_dematamento[3];
-                if(d.properties.classname===class_desmatamento[4])
+                if(d.properties.classname===globalValues.class_quemadas[4])
                     return cors_dematamento[4];
-                if(d.properties.classname===class_desmatamento[5])
+                if(d.properties.classname===globalValues.class_quemadas[5])
                     return cors_dematamento[5];
-                if(d.properties.classname===class_desmatamento[6])
+                if(d.properties.classname===globalValues.class_quemadas[6])
                     return cors_dematamento[6];
                 else{
                     return this.colorStrokeBase;

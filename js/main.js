@@ -1,4 +1,3 @@
-import { Maps } from './maps.js'
 import { TimeSeries} from './timeSeries.js'
 import {showMessage, sortByDate} from './utils.js'
 

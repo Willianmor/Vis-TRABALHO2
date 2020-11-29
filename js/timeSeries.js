@@ -1,7 +1,7 @@
 import { BarVertical } from './barVerticalChart.js';
 import { PieChart } from './pieChart.js';
 import { Maps } from './maps.js';
-import {formattedDate, fillOptionsSelect, showMessage} from './utils.js'
+import {formattedDate, fillOptionsSelect, showMessage, globalValues} from './utils.js'
 
 let confTimeSeries = {
     div: '#time_series', 
@@ -23,8 +23,6 @@ export class TimeSeries {
           this.svg = null;
 
           this.data_origin = null;
-          this.bar_vertical_states = null;
-          this.mapa = new Maps();
 
           this.createSvg();
     }
@@ -93,10 +91,13 @@ export class TimeSeries {
                 
                 let s = event.selection;
                 let s_selection = s.map(x.invert, x);
-
-                let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > new Date(s_selection[0]).getTime() &&
-                                                    new Date(parseDate(d.properties.date)).getTime() < new Date(s_selection[1]).getTime() );
-                
+                // Atualizar as variables globales
+                globalValues.filtro_date_ini = new Date(s_selection[0]).getTime();
+                globalValues.filtro_date_fin = new Date(s_selection[1]).getTime();
+                // filtrar o dato
+                let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
+                                                    new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin );
+                // Atualizar as datas no html
                 $('#date_ini').html(formattedDate(new Date(s_selection[0])));
                 $('#date_fin').html(formattedDate(new Date(s_selection[1])));
 
@@ -118,46 +119,50 @@ export class TimeSeries {
         // let test = new Set(d3.map(this.data, d => d.properties.classname));
         $('#date_ini').html(formattedDate(new Date(parseDate(this.data_origin[0].properties.date))));
         $('#date_fin').html(formattedDate(new Date(parseDate(this.data_origin[this.data_origin.length-1].properties.date))));
+        // Atualizar as variables globales
+        globalValues.filtro_date_ini = new Date(parseDate(this.data_origin[0].properties.date)).getTime();
+        globalValues.filtro_date_fin = new Date(parseDate(this.data_origin[this.data_origin.length-1].properties.date)).getTime();
         showMessage('div.render_data', 1500); 
     }
 
     // ================================== Mapa ================================
     createMapa(dataDesmatamento, dataGeo) {
-        this.mapa.initData(dataDesmatamento, dataGeo);
-        this.mapa.render();
+        globalValues.mapa = new Maps();
+        globalValues.mapa.initData(dataDesmatamento, dataGeo);
+        globalValues.mapa.render();
         this.loadFilters();
     }
 
     updateMapa(s_selection) {
-        //this.mapa.setData(filter_date);
-        this.mapa.updateMapa(s_selection, this.pie_chart_desmatamento.class_quemadas); // pie_chart_desmatamento tem que ser calculado antes
+        //globalValues.mapa.setData(filter_date);
+        globalValues.mapa.updateMapa(s_selection); // pie_chart_desmatamento tem que ser calculado antes
     }
 
     // ================================== Bar-Vertical Chart (Filtro Estados) ================================
     async createBarVertical() {
-        this.bar_vertical_states = new BarVertical();
-        await this.bar_vertical_states.setData(this.data_origin);
-        this.bar_vertical_states.initializeAxis();
-        this.bar_vertical_states.updateChart();
+        globalValues.bar = new BarVertical();
+        await globalValues.bar.setData(this.data_origin);
+        globalValues.bar.initializeAxis();
+        globalValues.bar.updateChart();
     }
     async updateBarVertical(filter_date) {
-        await this.bar_vertical_states.setData(filter_date);
-        this.bar_vertical_states.updateChart();
+        await globalValues.bar.setData(filter_date);
+        globalValues.bar.updateChart();
         // console.log(filter_date);
     }
 
     // ================================== Mapa ================================
     async createPieChart() {
-        this.pie_chart_desmatamento = new PieChart();
-        await this.pie_chart_desmatamento.setData(this.data_origin);
-        this.pie_chart_desmatamento.updateChart();
+        globalValues.pie = new PieChart();
+        await globalValues.pie.setData(this.data_origin);
+        globalValues.pie.updateChart();
     }
 
     async updatePieChart(filter_date) {
-        await this.pie_chart_desmatamento.setData(filter_date);
-        this.pie_chart_desmatamento.svg.remove();
-        this.pie_chart_desmatamento.createSvg();
-        this.pie_chart_desmatamento.updateChart();
+        await globalValues.pie.setData(filter_date);
+        globalValues.pie.svg.remove();
+        globalValues.pie.createSvg();
+        globalValues.pie.updateChart();
     }
 
 }

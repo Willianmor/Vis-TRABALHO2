@@ -1,4 +1,4 @@
-import {getCoresDesmatamento} from './utils.js';
+import {getCoresDesmatamento, globalValues} from './utils.js';
 
 let configBarVertical = {
     div: '#pie_clase_desmatamento', 
@@ -16,8 +16,6 @@ export class PieChart {
           this.svg = null;
           this.data = null;
 
-          this.class_quemadas = null;
-
           this.createSvg();
     }
 
@@ -31,14 +29,14 @@ export class PieChart {
   }
 
   async setData(data) {
-    if (this.class_quemadas == null){
-        this.class_quemadas = await new Set(d3.map(data, d => d.properties.classname));
-        this.class_quemadas = Array.from(this.class_quemadas);
+    if (globalValues.class_quemadas == null){
+        globalValues.class_quemadas = await new Set(d3.map(data, d => d.properties.classname));
+        globalValues.class_quemadas = Array.from(globalValues.class_quemadas);
     }
     let data_ = {};
     // Prencher o dictionario data_ com keys
-    for (let i=0; i< this.class_quemadas.length; i++) {
-            data_[this.class_quemadas[i]] = 0.0;
+    for (let i=0; i< globalValues.class_quemadas.length; i++) {
+            data_[globalValues.class_quemadas[i]] = 0.0;
     }
     // Prencher o dictionario data_ com values
     for (let i=0; i< data.length; i++) {
@@ -47,10 +45,10 @@ export class PieChart {
     }
     // Preencher o this.data
     this.data = [];
-    for (let i=0; i< this.class_quemadas.length; i++) {
+    for (let i=0; i< globalValues.class_quemadas.length; i++) {
           this.data.push({
-                name: this.class_quemadas[i],
-                value: +data_[this.class_quemadas[i]]
+                name: globalValues.class_quemadas[i],
+                value: +data_[globalValues.class_quemadas[i]]
           })
     }
   }

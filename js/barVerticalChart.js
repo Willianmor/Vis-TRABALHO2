@@ -1,3 +1,5 @@
+import {globalValues} from './utils.js';
+
 let configBarVertical = {
       div: '#bar_vertical_estados', 
       width: 400, 
@@ -18,7 +20,8 @@ export class BarVertical {
             this.yScale = null;
             this.xAxis = null;
             this.yAxis = null;
-            this.tooltip = null;
+
+            this.filtro_estado = null;
 
             this.createSvg();
             this.createMargins();
@@ -62,26 +65,6 @@ export class BarVertical {
             this.margins = this.svg
               .append('g')
               .attr("transform", `translate(${this.config.left},${this.config.top})`)
-      }
-
-      createTooltip() {
-            // Prep the tooltip bits, initial display is hidden
-            this.tooltip = this.svg.append("g")
-                  .attr("class", "tooltip")
-                  .style("display", "none");
-            
-            this.tooltip.append("rect")
-                  .attr("width", 60)
-                  .attr("height", 20)
-                  .attr("fill", "white")
-                  .style("opacity", 0.5);
-
-            this.tooltip.append("text")
-                  .attr("x", 30)
-                  .attr("dy", "1.2em")
-                  .style("text-anchor", "middle")
-                  .attr("font-size", "12px")
-                  .attr("font-weight", "bold");
       }
 
       initializeAxis() {
@@ -150,7 +133,6 @@ export class BarVertical {
                                                             .tickSize(-innerWidth)
                                                             .tickPadding(10));
 
-            //this.createTooltip();
             // Create the u variable
             let u = this.svg.selectAll("rect")
                   .data(this.data)
@@ -159,9 +141,21 @@ export class BarVertical {
                   .append("rect") // Adicione um novo rect para cada novo elemento
                   .attr('class', 'mybar')
                         .on("click", function(event, d) {
-                              console.log(d); 
-                              console.log(d3.pointer(event));
-                        })
+                              //console.log(d3.pointer(event));
+                              if (globalValues.filtro_estado == d.cx){
+                                    console.log('Mesmo estado seleccionado');
+                                    globalValues.filtro_estado = null;
+                                    $('#id_estado').html('');
+                                    $('#id_area_estado').html('');
+                              }else{
+                                    globalValues.filtro_estado = d.cx;
+                                    $('#id_estado').html(d.cx);
+                                    $('#id_area_estado').html(d.cy.toLocaleString());
+                              }
+                              globalValues.mapa.updateMapa();
+
+                              
+                        }.bind(this))
                         .on("mouseover", function(e, d) { 
                               let xPosition = d3.pointer(e)[0] - 5;
                               //let yPosition = d3.pointer(e)[1] - 5;

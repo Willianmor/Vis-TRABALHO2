@@ -1,6 +1,13 @@
 
-export function getEstados() {
-    return [];
+export let globalValues = {
+    filtro_estado: null,
+    filtro_date_ini: null,
+    filtro_date_fin: null,
+    class_quemadas: null,
+    cor_desmatamento: ['#FF0000', '#006400', '#8B4513', '#FFA500', '#FFF68F', '#CD8162', '#FFFF00'],
+    mapa: null,
+    bar:null,
+    pie: null,
 }
 
 export function getCoresDesmatamento() {
@@ -44,4 +51,17 @@ export function formattedDate(d = new Date) {
     if (day.length < 2) day = '0' + day;
 
     return `${day}/${month}/${year}`;
+}
+
+export function filterByState(state_origen, state_consulta) {
+    //console.log(state_origen, state_consulta)
+    if (state_consulta==null) {
+        return true; // nao tem estado para comparar, defaul apectar todo
+    }
+    if(state_origen==state_consulta){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
