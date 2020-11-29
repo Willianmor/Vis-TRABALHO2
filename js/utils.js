@@ -5,6 +5,7 @@ export let globalValues = {
     filtro_date_fin: null,
     class_quemadas: null,
     cor_desmatamento: ['#FF0000', '#006400', '#8B4513', '#FFA500', '#FFF68F', '#CD8162', '#FFFF00'],
+    parseDate: d3.timeParse("%Y-%m-%d"),
     mapa: null,
     bar:null,
     pie: null,
@@ -35,7 +36,7 @@ export function fillOptionsSelect(idElement, dataGrups){
 }
 
 export function sortByDate(arr) {
-    let parseDate = d3.timeParse("%Y/%m/%d");
+    let parseDate = globalValues.parseDate;
     let sorter = (a, b) => {
        return new Date(parseDate(a.properties.date)).getTime() - new Date(parseDate(b.properties.date)).getTime();
     }

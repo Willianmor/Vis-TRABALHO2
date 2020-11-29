@@ -26,7 +26,7 @@
                 <h5><span class="badge badge-secondary">1</span>Filtros</h5>
                 <div class="form-group row">
                     <label class="col-sm-5 col-form-label" for="inlineFormCustomSelectPref">Ano</label>
-                    <select class="custom-select col-sm-7" id="filtro_estados" onchange="changeDataByDate(this)"></select>
+                    <select class="custom-select col-sm-7" id="filtro_estados" onchange="changeAno(this)"></select>
                 </div>
                 <!-- Time Series Chart -->
                 Exibindo dados para todo o intervalo do gráfico: <span id="date_ini" style="font-weight: bold;"></span> - <span id="date_fin" style="font-weight: bold;"></span>
@@ -41,7 +41,7 @@
                 <div id="bar_vertical_estados" class="scrolling-wrapper card"></div>
                 <!-- Pie Chart -->
                 <h4>Area por Classes</h4>
-                Exibindo dados para o estado <span id="id_pie_estado" style="font-weight: bold;">All</span>.
+                Exibindo dados para o estado <span id="id_pie_estado" style="font-weight: bold;">All</span> (km<sup>2</sup>).
                 <div id="pie_clase_desmatamento" class="scrolling-wrapper card"></div>
             </div>  
             <div class="col">
@@ -53,6 +53,18 @@
     </div>
     <div class="alert alert-info load_data"> <strong>Info!</strong> Carregando os datos do Mapa ...</div>
     <div class="alert alert-success render_data"> <strong>Success!</strong> Renderizado e dados carregados ...</div>
+
+    <!-- Footer -->
+    <footer class="page-footer font-small blue">
+
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3">© 2020-VIS:
+        <a href="#"> Jose Luis Huillca</a>, <a href="#"> William Moreira</a>
+        </div>
+        <!-- Copyright -->
+    
+    </footer>
+    <!-- Footer -->
 </body>
 
 <script type="module" src="js/main.js"></script>

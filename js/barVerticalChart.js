@@ -190,7 +190,7 @@ export class BarVertical {
       }
 
       async updatePieChart() {
-            let parseDate = d3.timeParse("%Y/%m/%d");
+            let parseDate = globalValues.parseDate;
             let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
                                                     new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin &&
                                                     filterByState(d.properties.uf, globalValues.filtro_estado));

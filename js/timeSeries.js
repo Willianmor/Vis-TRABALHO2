@@ -42,7 +42,7 @@ export class TimeSeries {
     async setData(data) {
         this.data_origin = data;
 
-        let parseDate = d3.timeParse("%Y/%m/%d");
+        let parseDate = globalValues.parseDate;
         this.data = await d3.map(data, function(d) {
             return {
                 cx: parseDate(d.properties.date),
@@ -79,7 +79,7 @@ export class TimeSeries {
             .y1(function(d) { return y(d.cy) })
         );
         
-        let parseDate = d3.timeParse("%Y/%m/%d");
+        let parseDate = globalValues.parseDate;
         // Brush
         let brush = d3.brushX()
             .extent([
@@ -116,7 +116,7 @@ export class TimeSeries {
     }
 
     loadFilters() {
-        let parseDate = d3.timeParse("%Y/%m/%d");
+        let parseDate = globalValues.parseDate;
         let optionAnos = new Set(d3.map(this.data_origin, d => new Date(parseDate(d.properties.date)).getFullYear()));
         fillOptionsSelect('filtro_estados', optionAnos);
 

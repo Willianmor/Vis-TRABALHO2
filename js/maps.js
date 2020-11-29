@@ -28,7 +28,7 @@ export class Maps {
         this.yAxis = null;
 
         this.center_map = [-57.82134,-5.15357];
-        this.scale = 1500;
+        this.scale = 1300;
         this.projection = null;
         this.path = null;
         this.data = null;
@@ -60,17 +60,6 @@ export class Maps {
             .attr('class', 'card');
     }
 
-    async loadData(myfile) {
-        showMessage('div.load_data', 1500);
-        let [dataGeo, dataDesmatamento] = await Promise.all([
-                d3.json('../assets/dataset/EstadosBR_IBGE_LLWGS84.geojson'),
-                d3.json(myfile),
-                ])
-                
-        this.data = dataDesmatamento.features;
-        sortByDate(this.data);
-        this.dataGeo = dataGeo;
-    }
     async setData(data) {
         this.data = data
     }
@@ -93,7 +82,9 @@ export class Maps {
                     .attr("fill", "#b8b8b8")
                     .attr("d", this.path)
                     .style("stroke", "black")
-                    .style("opacity", .3);
+                    .style("opacity", .3)
+                .append("title")
+                    .text(d => `${d.properties.ESTADO}`);;
 
         // Add data de quemadas
         // Filter data
@@ -123,7 +114,7 @@ export class Maps {
     }
 
     updateMapa() {
-        let parseDate = d3.timeParse("%Y/%m/%d");
+        let parseDate = globalValues.parseDate;
         let cors_dematamento = globalValues.cor_desmatamento;
         let color = (d) => {
             if (
