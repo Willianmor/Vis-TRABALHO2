@@ -106,7 +106,7 @@ export class Maps {
                     .attr("fill", "#b8b8b8")
                     .attr("d", this.path)
                     .style("stroke", this.colorStrokeBase)
-                    .style("stroke-width", 3)
+                    .style("stroke-width", 1)
                     .style("opacity", .7);
         
         this.svg.call(d3.zoom()
@@ -125,7 +125,7 @@ export class Maps {
     updateMapa() {
         let parseDate = d3.timeParse("%Y/%m/%d");
         let cors_dematamento = globalValues.cor_desmatamento;
-        let color  = (d) => {
+        let color = (d) => {
             if (
                 new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
                 new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin && 
@@ -152,9 +152,21 @@ export class Maps {
                 return this.colorStrokeBase;
             }
         }
+        let stroke_width = (d) => {
+            if (
+                new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
+                new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin && 
+                filterByState(d.properties.uf, globalValues.filtro_estado)
+            ) {
+                return 3;
+            }else {
+                return 1;
+            }
+        }
 
         this.svg.selectAll('.desmatamento')
-            .style('stroke', color);
+            .style('stroke', color)
+            .style("stroke-width", stroke_width);
     }
 
 }

@@ -1,4 +1,4 @@
-import {globalValues} from './utils.js';
+import {globalValues, filterByState} from './utils.js';
 
 let configBarVertical = {
       div: '#bar_vertical_estados', 
@@ -29,6 +29,7 @@ export class BarVertical {
       }
 
       async setData(data){
+            this.data_origin = data;
             let states = await new Set(d3.map(data, d => d.properties.uf));
             states = Array.from(states);
             let data_ = {};
@@ -145,16 +146,18 @@ export class BarVertical {
                               if (globalValues.filtro_estado == d.cx){
                                     console.log('Mesmo estado seleccionado');
                                     globalValues.filtro_estado = null;
-                                    $('#id_estado').html('');
+                                    $('#id_estado').html('All');
+                                    $('#id_pie_estado').html('All');
                                     $('#id_area_estado').html('');
                               }else{
                                     globalValues.filtro_estado = d.cx;
                                     $('#id_estado').html(d.cx);
+                                    $('#id_pie_estado').html(d.cx);
                                     $('#id_area_estado').html(d.cy.toLocaleString());
                               }
                               globalValues.mapa.updateMapa();
-
-                              
+                              // Update Pie 
+                              this.updatePieChart();
                         }.bind(this))
                         .on("mouseover", function(e, d) { 
                               let xPosition = d3.pointer(e)[0] - 5;
@@ -184,5 +187,16 @@ export class BarVertical {
 
             // Se houver menos grupo no novo conjunto de dados, excluo aqueles que não estão mais em uso
             u.exit().remove()
+      }
+
+      async updatePieChart() {
+            let parseDate = d3.timeParse("%Y/%m/%d");
+            let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
+                                                    new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin &&
+                                                    filterByState(d.properties.uf, globalValues.filtro_estado));
+            await globalValues.pie.setData(filter_date);
+            globalValues.pie.svg.remove();
+            globalValues.pie.createSvg();
+            globalValues.pie.updateChart();
       }
 }

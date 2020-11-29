@@ -1,7 +1,7 @@
 import { BarVertical } from './barVerticalChart.js';
 import { PieChart } from './pieChart.js';
 import { Maps } from './maps.js';
-import {formattedDate, fillOptionsSelect, showMessage, globalValues} from './utils.js'
+import {formattedDate, fillOptionsSelect, showMessage, globalValues, filterByState} from './utils.js'
 
 let confTimeSeries = {
     div: '#time_series', 
@@ -97,11 +97,15 @@ export class TimeSeries {
                 // filtrar o dato
                 let filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
                                                     new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin );
+                this.updateBarVertical(filter_date);
+                                                    
                 // Atualizar as datas no html
                 $('#date_ini').html(formattedDate(new Date(s_selection[0])));
                 $('#date_fin').html(formattedDate(new Date(s_selection[1])));
 
-                this.updateBarVertical(filter_date);
+                filter_date = this.data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getTime() > globalValues.filtro_date_ini &&
+                                                    new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin &&
+                                                    filterByState(d.properties.uf, globalValues.filtro_estado));
                 this.updatePieChart(filter_date);
                 this.updateMapa(s_selection);
             }.bind(this));
@@ -151,7 +155,7 @@ export class TimeSeries {
         // console.log(filter_date);
     }
 
-    // ================================== Mapa ================================
+    // ================================== Pie ================================
     async createPieChart() {
         globalValues.pie = new PieChart();
         await globalValues.pie.setData(this.data_origin);
