@@ -30,7 +30,7 @@ export class TimeSeries {
 
     clean() {
         this.data = null;
-        this.config = null;
+        //this.config = null;
         this.svg.remove();
         this.svg = null;
         this.data_origin = null;
@@ -47,11 +47,6 @@ export class TimeSeries {
          .append("g")
             .attr("transform", `translate(${this.config.left},${this.config.top})`);
     }
-    createMargins() {
-        this.margins = this.svg
-          .append('g')
-          .attr("transform", `translate(${this.config.left},${this.config.top})`)
-  }
 
     async setData(data) {
         this.data_origin = data;
@@ -129,26 +124,11 @@ export class TimeSeries {
                 
     }
 
-    loadFilters() {
-        let parseDate = globalValues.parseDate;
-        let optionAnos = new Set(d3.map(this.data_origin, d => new Date(parseDate(d.properties.date)).getFullYear()));
-        fillOptionsSelect('filtro_estados', optionAnos);
-
-        // let test = new Set(d3.map(this.data, d => d.properties.classname));
-        $('#date_ini').html(formattedDate(new Date(parseDate(this.data_origin[0].properties.date))));
-        $('#date_fin').html(formattedDate(new Date(parseDate(this.data_origin[this.data_origin.length-1].properties.date))));
-        // Atualizar as variables globales
-        globalValues.filtro_date_ini = new Date(parseDate(this.data_origin[0].properties.date)).getTime();
-        globalValues.filtro_date_fin = new Date(parseDate(this.data_origin[this.data_origin.length-1].properties.date)).getTime();
-        showMessage('div.render_data', 1500); 
-    }
-
     // ================================== Mapa ================================
     createMapa(dataDesmatamento, dataGeo) {
         globalValues.mapa = new Maps();
         globalValues.mapa.initData(dataDesmatamento, dataGeo);
         globalValues.mapa.render();
-        this.loadFilters();
     }
 
     updateMapa(s_selection) {

@@ -10,8 +10,7 @@ window.changeAno = async function changeAno(selectObject) {
       // Load Data
       // let [_, dataDesmatamento] = await loadData(selectObject.value);
 
-      // // Time series
-      // globalValues.timeSeries.svg.remove();
+      // // // Time series
       // globalValues.timeSeries.createSvg();
       // await globalValues.timeSeries.setData(dataDesmatamento);
       // globalValues.timeSeries.updateChart();
@@ -46,7 +45,7 @@ function cleanSVGandGlobalValues() {
   globalValues.bar.clean();
   globalValues.mapa.clean();
   //timeSeries = null;
-  $('#time_series').empty(); 
+  $('#time_series').empty(); // existe elementos de SVG que no se podian eliminar
 
   //clear globalVariables
   globalValues.filtro_estado = null;
