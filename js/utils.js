@@ -6,6 +6,7 @@ export let globalValues = {
     class_quemadas: null,
     cor_desmatamento: ['#FF0000', '#006400', '#8B4513', '#FFA500', '#FFF68F', '#CD8162', '#FFFF00'],
     parseDate: d3.timeParse("%Y-%m-%d"),
+    timeSeries: null,
     mapa: null,
     bar:null,
     pie: null,

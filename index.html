@@ -26,11 +26,19 @@
                 <h5><span class="badge badge-secondary">1</span>Filtros</h5>
                 <div class="form-group row">
                     <label class="col-sm-5 col-form-label" for="inlineFormCustomSelectPref">Ano</label>
-                    <select class="custom-select col-sm-7" id="filtro_estados" onchange="changeAno(this)"></select>
+                    <select class="custom-select col-sm-7" id="filtro_estados" onchange="changeAno(this)">
+                        <option value="../assets/dataset/deter_amz_2016.geojson">2016</option>
+                        <option value="../assets/dataset/deter_amz_2017.geojson">2017</option>
+                        <option value="../assets/dataset/deter_amz_2018.geojson">2018</option>
+                        <option value="../assets/dataset/deter_amz_2019.geojson">2019</option>
+                        <option value="../assets/dataset/deter_amz_2020.geojson" selected>2020</option>
+                    </select>
                 </div>
                 <!-- Time Series Chart -->
                 Exibindo dados para todo o intervalo do gráfico: <span id="date_ini" style="font-weight: bold;"></span> - <span id="date_fin" style="font-weight: bold;"></span>
                 <div id="time_series" class="card"></div>
+                <div class="alert alert-info load_data"> <strong>Info!</strong> Carregando os datos do Mapa ...</div>
+                <div class="alert alert-success render_data"> <strong>Success!</strong> Renderizado e dados carregados ...</div>
             </div>
         </div>    
         <div class="row">  
@@ -47,12 +55,10 @@
             <div class="col">
                 <!-- Chart -->
                 <div id="main" class="scrolling-wrapper"></div>
-                <div id="time_series"></div>
             </div>
         </div>
     </div>
-    <div class="alert alert-info load_data"> <strong>Info!</strong> Carregando os datos do Mapa ...</div>
-    <div class="alert alert-success render_data"> <strong>Success!</strong> Renderizado e dados carregados ...</div>
+    
 
     <!-- Footer -->
     <footer class="page-footer font-small blue">

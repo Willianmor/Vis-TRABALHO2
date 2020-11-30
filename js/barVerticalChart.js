@@ -21,11 +21,20 @@ export class BarVertical {
             this.xAxis = null;
             this.yAxis = null;
 
-            this.filtro_estado = null;
-
             this.createSvg();
             this.createMargins();
-            this. createAxisLabel('Estados', 'Area(km2)', '');
+            this.createAxisLabel('Estados', 'Area(km2)', '');
+      }
+
+      clean() {
+            this.data = null;
+            this.config = null;
+            this.svg.remove()
+            this.svg = null;
+            this.xScale = null;
+            this.yScale = null;
+            this.xAxis = null;
+            this.yAxis = null;
       }
 
       async setData(data){

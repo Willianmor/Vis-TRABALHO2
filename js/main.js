@@ -1,12 +1,31 @@
 import { TimeSeries} from './timeSeries.js'
 import {showMessage, sortByDate, fillOptionsSelect, formattedDate, globalValues} from './utils.js'
 
-window.changeAno = function changeAno(selectObject) {
+window.changeAno = async function changeAno(selectObject) {
     console.log(selectObject.value);
+
+    showMessage('div.load_data', 1500);
+    cleanSVGandGlobalValues();
+    main(selectObject.value);
+    // Load Data
+    // let [_, dataDesmatamento] = await loadData(selectObject.value);
+
+    // // Time series
+    // globalValues.timeSeries.svg.remove();
+    // globalValues.timeSeries.createSvg();
+    // await globalValues.timeSeries.setData(dataDesmatamento);
+    // globalValues.timeSeries.updateChart();
+    
+
+    showMessage('div.render_data', 1500); 
+}
+
+async function loadData2(myfile) {
+  let [_, dataDesmatamento] = await loadData(myfile);
+  return dataDesmatamento;
 }
 
 async function loadData(myfile) {
-  showMessage('div.load_data', 1500);
   let [dataGeo, dataDesmatamento] = await Promise.all([
           d3.json('../assets/dataset/EstadosBR_IBGE_LLWGS84.geojson'),
           d3.json(myfile),
@@ -16,47 +35,45 @@ async function loadData(myfile) {
   return [dataGeo, dataDesmatamento];
 }
 
-async function loadFilterAno(year, data_origin) {
-  let parseDate = globalValues.parseDate;
-  let data_filter = await data_origin.filter( d =>  new Date(parseDate(d.properties.date)).getFullYear() == year);
+function cleanSVGandGlobalValues() {
+  //clear svg
+  globalValues.timeSeries.clean();
+  globalValues.pie.clean();
+  globalValues.bar.clean();
+  globalValues.mapa.clean();
+  //timeSeries = null;
+  $('#time_series').empty(); 
 
-  $('#date_ini').html(formattedDate(new Date(parseDate(data_filter[0].properties.date))));
-  $('#date_fin').html(formattedDate(new Date(parseDate(data_filter[data_filter.length-1].properties.date))));
-  // Atualizar as variables globales
-  globalValues.filtro_date_ini = new Date(parseDate(data_filter[0].properties.date)).getTime();
-  globalValues.filtro_date_fin = new Date(parseDate(data_filter[data_filter.length-1].properties.date)).getTime();
-  
-  return data_filter;
+  //clear globalVariables
+  globalValues.filtro_estado = null;
+  globalValues.filtro_date_ini = null;
+  globalValues.filtro_date_fin = null;
+  globalValues.class_quemadas = null;
+  globalValues.mapa = null;
+  globalValues.bar =null;
+  globalValues.pie = null;
+  globalValues.timeSeries = null;
 }
 
 // ----------------------- Main --------------------------
 // Load by default bar-chart
-async function main() {
-    
-    let desmatamento_geojson = '../assets/dataset/deter_amz_full.geojson';
-
+async function main(desmatamento_geojson) {
+    showMessage('div.load_data', 1500);
     // Load Data
-    [dataGeo, dataDesmatamento] = await loadData(desmatamento_geojson);
-    // Load Slect-Filtro by year
-    let parseDate = globalValues.parseDate;
-    let optionAnos = new Set(d3.map(dataDesmatamento, d => new Date(parseDate(d.properties.date)).getFullYear()));
-    fillOptionsSelect('filtro_estados', optionAnos);
-
-    let data_filter = await loadFilterAno("2019", dataDesmatamento);
+    let [dataGeo, dataDesmatamento] = await loadData(desmatamento_geojson);
 
     // Time series
-    let timeSeries = new TimeSeries();
-    await timeSeries.setData(data_filter);
-    timeSeries.updateChart();
+    globalValues.timeSeries = new TimeSeries();
+    await globalValues.timeSeries.setData(dataDesmatamento);
+    globalValues.timeSeries.updateChart();
     
-    timeSeries.createMapa(data_filter, dataGeo);
-    timeSeries.createBarVertical();
-    timeSeries.createPieChart();
+    globalValues.timeSeries.createMapa(dataDesmatamento, dataGeo);
+    globalValues.timeSeries.createBarVertical();
+    globalValues.timeSeries.createPieChart();
 
     showMessage('div.render_data', 1500); 
 }
 // ------ Global Variables ----
-let dataGeo = null;
-let dataDesmatamento = null;
-main();
+// Default 2020
+main('../assets/dataset/deter_amz_2020.geojson');
 

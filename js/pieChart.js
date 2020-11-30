@@ -26,7 +26,14 @@ export class PieChart {
             .attr("font-family", "sans-serif")
             .attr("font-size", 12)
             .attr("text-anchor", "middle");
-  }
+    }
+
+    clean() {
+        this.data = null;
+        this.config = null;
+        this.svg.remove()
+        this.svg = null;    
+    }
 
   async setData(data) {
     if (globalValues.class_quemadas == null){

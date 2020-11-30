@@ -8,7 +8,7 @@ let confTimeSeries = {
     width: 1000, 
     height: 70, 
     top: 10, 
-    left: 30, 
+    left: 60, 
     bottom: 30, 
     right: 0
 };
@@ -25,6 +25,15 @@ export class TimeSeries {
           this.data_origin = null;
 
           this.createSvg();
+          //this.createMargins();
+    }
+
+    clean() {
+        this.data = null;
+        this.config = null;
+        this.svg.remove();
+        this.svg = null;
+        this.data_origin = null;
     }
 
     createSvg() {
@@ -35,9 +44,14 @@ export class TimeSeries {
             .attr('y', 10)
             .attr('width', this.config.width + this.config.left + this.config.right)
             .attr('height', this.config.height + this.config.top + this.config.bottom)
-            .append('g')
+         .append("g")
             .attr("transform", `translate(${this.config.left},${this.config.top})`);
     }
+    createMargins() {
+        this.margins = this.svg
+          .append('g')
+          .attr("transform", `translate(${this.config.left},${this.config.top})`)
+  }
 
     async setData(data) {
         this.data_origin = data;

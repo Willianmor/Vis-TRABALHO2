@@ -20,28 +20,25 @@ export class Maps {
         this.config = confsvg;
         this.svg = null;
 
-        this.x0 = null;
-        this.y0 = null;
-        this.xScale = null;
-        this.yScale = null;
-        this.xAxis = null;
-        this.yAxis = null;
-
         this.center_map = [-57.82134,-5.15357];
         this.scale = 1300;
         this.projection = null;
         this.path = null;
         this.data = null;
         this.dataGeo = null;
-        this.zoom =null;
 
-        // Test Brush
-        this.brush = null;
-        this.idleTimeout;
-        this.idleDelay = 350;
         this.colorStrokeBase = '#b8b8b8';
 
         this.createSvg();
+    }
+
+    clean() {
+        this.data = null;
+        this.dataGeo = null;
+        this.config = null;
+        this.svg.remove()
+        this.svg = null;
+        this.projection = null;
     }
 
     initData(data, dataGeo) {
