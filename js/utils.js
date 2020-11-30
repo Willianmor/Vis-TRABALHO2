@@ -3,7 +3,7 @@ export let globalValues = {
     filtro_estado: null,
     filtro_date_ini: null,
     filtro_date_fin: null,
-    class_quemadas: null,
+    class_quemadas: ['DESMATAMENTO_CR', 'DEGRADACAO', 'DESMATAMENTO_VEG', 'CS_DESORDENADO', 'CS_GEOMETRICO', 'MINERACAO', 'CICATRIZ_DE_QUEIMADA'],
     cor_desmatamento: ['#FF0000', '#006400', '#8B4513', '#FFA500', '#FFF68F', '#CD8162', '#FFFF00'],
     parseDate: d3.timeParse("%Y-%m-%d"),
     timeSeries: null,

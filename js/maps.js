@@ -146,7 +146,7 @@ export class Maps {
                 new Date(parseDate(d.properties.date)).getTime() < globalValues.filtro_date_fin && 
                 filterByState(d.properties.uf, globalValues.filtro_estado)
             ) {
-                return 3;
+                return 2.5;
             }else {
                 return 1;
             }

@@ -3,24 +3,16 @@ import {showMessage, sortByDate, checkFileExist, formattedDate, globalValues} fr
 
 window.changeAno = async function changeAno(selectObject) {
     console.log(selectObject.value);
-    if (checkFileExist(selectObject.value)) {
-      showMessage('div.load_data', 1500);
-      cleanSVGandGlobalValues();
-      main(selectObject.value);
-      // Load Data
-      // let [_, dataDesmatamento] = await loadData(selectObject.value);
+    cleanSVGandGlobalValues();
+    main(selectObject.value);
+    // Load Data
+    // let [_, dataDesmatamento] = await loadData(selectObject.value);
 
-      // // // Time series
-      // globalValues.timeSeries.createSvg();
-      // await globalValues.timeSeries.setData(dataDesmatamento);
-      // globalValues.timeSeries.updateChart();
+    // // // Time series
+    // globalValues.timeSeries.createSvg();
+    // await globalValues.timeSeries.setData(dataDesmatamento);
+    // globalValues.timeSeries.updateChart();
       
-      showMessage('div.render_data', 1500); 
-    }
-    else {
-      showMessage('div.fileExist', 1500);
-    }
-    
 }
 
 async function loadData2(myfile) {
@@ -61,6 +53,7 @@ function cleanSVGandGlobalValues() {
 // ----------------------- Main --------------------------
 // Load by default bar-chart
 async function main(desmatamento_geojson) {
+  if (checkFileExist(desmatamento_geojson)) {
     showMessage('div.load_data', 1500);
     // Load Data
     let [dataGeo, dataDesmatamento] = await loadData(desmatamento_geojson);
@@ -75,6 +68,9 @@ async function main(desmatamento_geojson) {
     globalValues.timeSeries.createPieChart();
 
     showMessage('div.render_data', 1500); 
+  }else {
+    showMessage('div.fileExist', 1500);
+  }
 }
 // ------ Global Variables ----
 // Default 2020
