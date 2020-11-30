@@ -1,23 +1,27 @@
 import { TimeSeries} from './timeSeries.js'
-import {showMessage, sortByDate, fillOptionsSelect, formattedDate, globalValues} from './utils.js'
+import {showMessage, sortByDate, checkFileExist, formattedDate, globalValues} from './utils.js'
 
 window.changeAno = async function changeAno(selectObject) {
     console.log(selectObject.value);
+    if (checkFileExist(selectObject.value)) {
+      showMessage('div.load_data', 1500);
+      cleanSVGandGlobalValues();
+      main(selectObject.value);
+      // Load Data
+      // let [_, dataDesmatamento] = await loadData(selectObject.value);
 
-    showMessage('div.load_data', 1500);
-    cleanSVGandGlobalValues();
-    main(selectObject.value);
-    // Load Data
-    // let [_, dataDesmatamento] = await loadData(selectObject.value);
-
-    // // Time series
-    // globalValues.timeSeries.svg.remove();
-    // globalValues.timeSeries.createSvg();
-    // await globalValues.timeSeries.setData(dataDesmatamento);
-    // globalValues.timeSeries.updateChart();
+      // // Time series
+      // globalValues.timeSeries.svg.remove();
+      // globalValues.timeSeries.createSvg();
+      // await globalValues.timeSeries.setData(dataDesmatamento);
+      // globalValues.timeSeries.updateChart();
+      
+      showMessage('div.render_data', 1500); 
+    }
+    else {
+      showMessage('div.fileExist', 1500);
+    }
     
-
-    showMessage('div.render_data', 1500); 
 }
 
 async function loadData2(myfile) {

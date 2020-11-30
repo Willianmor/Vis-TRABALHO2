@@ -67,3 +67,18 @@ export function filterByState(state_origen, state_consulta) {
         return false;
     }
 }
+
+export function checkFileExist(url) { 
+    if (url.length === 0) { 
+        console.log("Please enter File URL"); 
+    } else { 
+        let http = new XMLHttpRequest();
+        http.open('HEAD', url, false); 
+        http.send(); 
+        if (http.status === 200) { 
+            return true; 
+        } else { 
+            return false; 
+        } 
+    } 
+} 
