@@ -85,9 +85,9 @@ export class Maps {
 
         // Add data de quemadas
         // Filter data
-        let data_filter = this.data.filter( d =>  d.properties.uf=="MT" );
+        //let data_filter = this.data.filter( d =>  d.properties.uf=="MT" );
         this.svg.selectAll("myPath")
-                .data(data_filter)
+                .data(this.data)
                 .enter()
                 .append("path")
                     .attr('class','desmatamento')
