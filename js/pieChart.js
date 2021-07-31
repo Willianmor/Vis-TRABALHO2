@@ -58,6 +58,8 @@ export class PieChart {
                 value: +data_[globalValues.class_quemadas[i]]
           })
     }
+    console.log(data_)
+    console.log(this.data);
   }
 
   appendLegend() {

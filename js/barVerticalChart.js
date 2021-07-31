@@ -59,7 +59,7 @@ export class BarVertical {
                         cy: +data_[states[i]]
                   })
             }
-            //console.log(this.data);
+            // console.log(this.data);
       }
 
       createSvg() {
